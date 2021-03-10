@@ -10,11 +10,11 @@ void error_handling(char *message);
 
 int main(int argc, char* argv[])
 {
-	int sock;
+	int sock, i;
 	int str_len;
 	struct sockaddr_in serv_addr;
 	char message[BUF_SIZE];
-	
+	int count = 0;
 	
 	if(argc != 3)
 	{
@@ -42,23 +42,35 @@ int main(int argc, char* argv[])
 		puts("Connected.......");
 	}
 	
-	while(1)
+	
+	fputs("输入总数: (<100)", stdout);
+	fgets(message, BUF_SIZE, stdin);
+	write(sock, message, strlen(message));
+	str_len = read(sock, message, BUF_SIZE-1);
+	message[str_len] = 0;
+	printf("总数为：: %s", message);
+	
+	
+	count = atoi(message);
+	for(i = 0; i < count; i++)
 	{
-		fputs("Input message(Q to quit):", stdout);
+		fputs("输入数字: ", stdout);
 		fgets(message, BUF_SIZE, stdin);
-		
-		if(!strcmp(message, "q\n") || !strcmp(message,"Q\n"))
-		{
-			break;
-		}
-		
 		write(sock, message, strlen(message));
 		str_len = read(sock, message, BUF_SIZE-1);
 		message[str_len] = 0;
-		printf("Message from server: %s", message);
+		printf("第%d个数字为：: %s", i+1, message);
 	}
 	
+	fputs("输入操作符: ", stdout);
+	fgets(message, BUF_SIZE, stdin);
+	write(sock, message, strlen(message));
+	str_len = read(sock, message, BUF_SIZE-1);
+	message[str_len] = 0;
+	printf("答案为：: %s", message);
 	
+
+
 	close(sock);
 	return 0;
 }

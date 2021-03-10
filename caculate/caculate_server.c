@@ -74,11 +74,21 @@ int main(int argc, char* argv[])
 		if((str_len = read(clnt_sock, message, BUF_SIZE)) != 0)
 		{
 			count = atoi(message);
+			if(count > 99)
+			{
+				memset(message, 0, BUF_SIZE);
+				sprintf(message,"Please input count (<100)\n");
+				write(clnt_sock, message, sizeof(message));
+				error_handling("Please input count (<100)\n");
+			}
 			pre_len = str_len;
 			write(clnt_sock, message, str_len);
 		}
 		else
 		{
+			memset(message, 0, BUF_SIZE);
+			sprintf(message,"Please input count (<100)\n");
+			write(clnt_sock, message, sizeof(message));
 			error_handling("Please input count (<100)\n");
 		}
 		
@@ -92,7 +102,10 @@ int main(int argc, char* argv[])
 			}
 			else
 			{
-				error_handling("Please input num(<255) \n");
+				memset(message, 0, BUF_SIZE);
+				sprintf(message,"Please input num \n");
+				write(clnt_sock, message, sizeof(message));
+				error_handling("Please input num \n");
 			}
 		}
 		
@@ -115,7 +128,9 @@ int main(int argc, char* argv[])
 				{
 					operator = DEC;
 					
-					for(k = 0; k < count; k++)
+					ans = number[0];
+					
+					for(k = 1; k < count; k++)
 					{
 						ans -= number[k];
 					}
@@ -125,7 +140,9 @@ int main(int argc, char* argv[])
 				{
 					operator = MUL;
 					
-					for(k = 0; k < count; k++)
+					ans = number[0];
+					
+					for(k = 1; k < count; k++)
 					{
 						ans *= number[k];
 					}
@@ -135,7 +152,9 @@ int main(int argc, char* argv[])
 				{
 					operator = DIV;
 					
-					for(k = 0; k < count; k++)
+					ans = number[0];
+					
+					for(k = 1; k < count; k++)
 					{
 						ans /= number[k];
 					}
@@ -143,14 +162,20 @@ int main(int argc, char* argv[])
 				}
 				default:
 				{
+					memset(message, 0, BUF_SIZE);
+					sprintf(message,"Please input operator (+ - * /)\n");
+					write(clnt_sock, message, sizeof(message));
 					error_handling("Please input operator (+ - * /) \n");
 				}
 			}
-			write(clnt_sock, message+ pre_len, str_len);
+			//write(clnt_sock, message+ pre_len, str_len);
 			pre_len = str_len+1;
 		}
 		else
 		{
+			memset(message, 0, BUF_SIZE);
+			sprintf(message,"Please input operator (+ - * /)\n");
+			write(clnt_sock, message, sizeof(message));
 			error_handling("Please input operator (+ - * /)\n");
 		}
 		
