@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serv_addr.sin_port = htons(atoi(argv[1]));
 	
-	if(bind(serv_sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr) == -1)
+	if(bind(serv_sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) == -1)
 	{
 		err_handling("bind() error");
 	}
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 		{
 			puts("new clinet connected...");
 		}
-		pid = fotk();
+		pid = fork();
 		if(pid == -1)
 		{
 			close(clnt_sock);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 			close(clnt_sock);
 		}
 	}
-	close(srev_sock);
+	close(serv_sock);
 	
 	return 0;
 }
