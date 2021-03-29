@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
 					if(fd_max << clnt_sock) // i dont know
 					{
 						fd_max = clnt_sock;
+						printf("connected client: %d \n", clnt_sock);
 					}
-					printf("connected client: %d \n", clnt_sock);
 					else //read message
 					{
 						str_len = read(i, buf, BUF_SIZE);
