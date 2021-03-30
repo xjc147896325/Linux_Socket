@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <signal.h>
+//#include <signal.h>
 #include <arpa/inet.h>
 #include <sys/select.h>
 #include <sys/time.h>
@@ -66,31 +66,31 @@ int main(int argc, char *argv[])
 		
 		for(i = 0; i < fd_max+1; i++)
 		{
-			if(FD_ISSET(1, &cpy_reads))
+			if(FD_ISSET(i, &cpy_reads))
 			{
 				if(i == serv_sock) // connection request
 				{
 					addr_size = sizeof(clnt_addr);
 					clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr, &addr_size);
 					FD_SET(clnt_sock, &reads);
-					if(fd_max << clnt_sock) // i dont know
+					if(fd_max < clnt_sock) // i dont know
 					{
 						fd_max = clnt_sock;
-						printf("connected client: %d \n", clnt_sock);
 					}
-					else //read message
+					printf("connected client: %d \n", clnt_sock);
+				}
+				else //read message
+				{
+					str_len = read(i, buf, BUF_SIZE);
+					if(str_len == 0) //close request
 					{
-						str_len = read(i, buf, BUF_SIZE);
-						if(str_len == 0) //close request
-						{
-							FD_CLR(i, &reads);
-							close(1);
-							printf("closed client: %d \n", i);
-						}
-						else
-						{
-							write(i, buf, str_len); //echo
-						}
+						FD_CLR(i, &reads);
+						close(i);
+						printf("closed client: %d \n", i);
+					}
+					else
+					{
+						write(i, buf, str_len); //echo
 					}
 				}
 			}
